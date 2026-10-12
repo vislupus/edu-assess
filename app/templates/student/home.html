@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Моите задания{% endblock %}
+{% block crumbs %}<span class="current">Моите задания</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1><i data-lucide="layout-dashboard"></i> Здравей, {{ user.full_name.split()[0] }}!</h1>
+    <p class="muted">Тук виждаш тестовете и изпитите, които учителите са ти възложили.</p>
+  </div>
+</div>
+<div id="studentHome"><div class="empty"><span class="spinner"></span></div></div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/student.js"></script>{% endblock %}

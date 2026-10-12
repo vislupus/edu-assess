@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Банка с въпроси{% endblock %}
+{% block head_css %}<link rel="stylesheet" href="/static/vendor/quill/quill.snow.css">{% endblock %}
+{% block crumbs %}<span class="current">Банка с въпроси</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1><i data-lucide="library"></i> Банка с въпроси</h1><p class="muted">Вашите въпроси – използвайте ги в тестове или ги оставете AI да ги разнообрази.</p></div>
+  <div class="actions"><button class="btn primary" id="newQuestionBtn"><i data-lucide="plus"></i> Нов въпрос</button></div>
+</div>
+<div class="toolbar">
+  <div class="search"><i data-lucide="search"></i><input type="search" id="fQ" placeholder="Търсене в текста…"></div>
+  <select id="fCur"><option value="">Всички програми</option>{% for c in curricula %}<option value="{{ c.id }}">{{ c.title }}</option>{% endfor %}</select>
+  <select id="fType"><option value="">Всички типове</option>{% for k in type_order %}<option value="{{ k }}">{{ qtypes[k].label }}</option>{% endfor %}</select>
+  <select id="fDiff"><option value="">Всяка трудност</option><option value="1">Ниска</option><option value="2">Средна</option><option value="3">Висока</option></select>
+  <span class="subtle right" id="bankCount"></span>
+</div>
+<div id="bankList"></div>
+<script id="qtypesData" type="application/json">{{ qtypes_list|jsonattr }}</script>
+<select id="curriculumOptions" class="hidden"><option value="">— без учебна програма —</option>{% for c in curricula %}<option value="{{ c.id }}" data-topics='{{ c.topics|map(attribute="title")|list|jsonattr }}'>{{ c.title }}</option>{% endfor %}</select>
+{% endblock %}
+{% block scripts %}<script src="/static/vendor/quill/quill.js"></script><script src="/static/js/questions.js"></script><script src="/static/js/editor.js"></script><script src="/static/js/bank.js"></script>{% endblock %}

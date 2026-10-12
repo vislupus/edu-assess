@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Тестове{% endblock %}
+{% block crumbs %}<span class="current">Тестове</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1><i data-lucide="file-text"></i> Тестове</h1><p class="muted">Създавайте тестове от нулата, от банката с въпроси или с AI по учебната програма.</p></div>
+  <div class="actions"><a class="btn primary" href="/tests/new"><i data-lucide="plus"></i> Нов тест</a></div>
+</div>
+<div id="testList"></div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/tests.js"></script>{% endblock %}

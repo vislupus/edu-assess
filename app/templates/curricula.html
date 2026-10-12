@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Учебни програми{% endblock %}
+{% block crumbs %}<span class="current">Учебни програми</span>{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1><i data-lucide="book-open"></i> Учебни програми</h1><p class="muted">Структурирани учебни програми, които AI използва като контекст при генериране на въпроси.</p></div>
+{% if user.role == 'teacher' %}<div class="actions"><label class="btn primary"><i data-lucide="upload"></i> Качи програма (JSON)<input type="file" id="curUpload" accept=".json" class="hidden"></label></div>{% endif %}</div>
+<div class="stack">
+{% for c in curricula %}
+<details class="panel">
+  <summary><i data-lucide="book"></i> {{ c.title }} <span class="badge">{{ c.topics|length }} теми</span></summary>
+  <div class="panel-body">
+    <p class="muted">{{ c.data.scope }}</p>
+    {% if c.data.goals %}<h4>Цели</h4><ul>{% for g in c.data.goals %}<li>{{ g }}</li>{% endfor %}</ul>{% endif %}
+    <h4>Учебно съдържание</h4>
+    {% for t in c.topics %}
+    <details class="panel"><summary>{{ t.title }}{% if t.concepts %} <span class="badge">{{ t.concepts|length }} понятия</span>{% endif %}</summary>
+      <div class="panel-body">
+        {% if t.subtopics %}<p class="small"><strong>Подтеми:</strong> {{ t.subtopics|join('; ') }}</p>{% endif %}
+        <p class="small"><strong>Очаквани резултати:</strong></p><ul class="small">{% for r in t.results %}<li>{{ r }}</li>{% endfor %}</ul>
+        {% if t.concepts %}<p class="small"><strong>Нови понятия:</strong> {{ t.concepts|join(', ') }}</p>{% endif %}
+      </div></details>
+    {% endfor %}
+    {% if c.data.formulas %}<h4>Формули</h4><ul>{% for f in c.data.formulas %}<li>{{ f }}</li>{% endfor %}</ul>{% endif %}
+    {% if c.data.assessment %}<h4>Оценяване</h4><ul class="small">{% for a in c.data.assessment %}<li>{{ a }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+</details>
+{% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}<script>
+const up = document.getElementById('curUpload');
+if (up) up.addEventListener('change', async () => { const f = up.files[0]; if (!f) return; const fd = new FormData(); fd.append('file', f); try { await App.api('POST', '/api/curricula', fd); App.toast('Програмата е заредена', 'success'); setTimeout(() => location.reload(), 500); } catch (e) { App.toast(e.message, 'error'); } });
+</script>{% endblock %}

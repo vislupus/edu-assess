@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}{{ assignment.title }}{% endblock %}
+{% block crumbs %}<a href="/assignments">Задания</a><span class="sep">/</span><span class="current">{{ assignment.title }}</span>{% endblock %}
+{% block content %}
+<div id="results" data-assignment="{{ assignment.id }}"></div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/results.js"></script>{% endblock %}

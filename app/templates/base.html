@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %} · {{ app_name }}</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/vendor/katex/katex.min.css">
+  {% block head_css %}{% endblock %}
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% block layout %}
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="/">
+      <span class="brand-mark"><i data-lucide="graduation-cap"></i></span>
+      <span class="brand-name">{{ app_name }}</span>
+    </a>
+    <nav class="nav">
+      {% if user and user.role == 'teacher' %}
+        <a href="/" class="{% if request.url.path == '/' %}active{% endif %}"><i data-lucide="layout-dashboard"></i><span>Начало</span></a>
+        <a href="/classes" class="{% if request.url.path.startswith('/classes') %}active{% endif %}"><i data-lucide="users"></i><span>Класове</span></a>
+        <a href="/tests" class="{% if request.url.path.startswith('/tests') %}active{% endif %}"><i data-lucide="file-text"></i><span>Тестове</span></a>
+        <a href="/bank" class="{% if request.url.path.startswith('/bank') %}active{% endif %}"><i data-lucide="library"></i><span>Банка с въпроси</span></a>
+        <a href="/assignments" class="{% if request.url.path.startswith('/assignments') or request.url.path.startswith('/attempts') %}active{% endif %}"><i data-lucide="send"></i><span>Задания и резултати</span></a>
+        <a href="/curricula" class="{% if request.url.path.startswith('/curricula') %}active{% endif %}"><i data-lucide="book-open"></i><span>Учебни програми</span></a>
+      {% elif user %}
+        <a href="/" class="{% if request.url.path == '/' %}active{% endif %}"><i data-lucide="layout-dashboard"></i><span>Моите задания</span></a>
+        <a href="/my-results" class="{% if request.url.path.startswith('/my-results') %}active{% endif %}"><i data-lucide="chart-no-axes-column"></i><span>Моите резултати</span></a>
+        <a href="/curricula" class="{% if request.url.path.startswith('/curricula') %}active{% endif %}"><i data-lucide="book-open"></i><span>Учебни програми</span></a>
+      {% endif %}
+    </nav>
+    <div class="sidebar-foot">
+      {% if user %}
+      <div class="user-chip">
+        <span class="avatar" style="--c: {{ user.avatar_color }}">{{ user.initials }}</span>
+        <div class="user-meta">
+          <div class="user-name">{{ user.full_name }}</div>
+          <div class="user-sub">{% if user.role == 'teacher' %}{{ user.subject }}{% else %}Ученик · {{ user.grade_label }} клас{% endif %}</div>
+        </div>
+        <form method="post" action="/logout" class="inline"><button class="icon-btn" title="Изход" type="submit"><i data-lucide="log-out"></i></button></form>
+      </div>
+      {% endif %}
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn only-mobile" id="navToggle" aria-label="Меню"><i data-lucide="menu"></i></button>
+      <div class="crumbs">{% block crumbs %}{% endblock %}</div>
+      <div class="topbar-actions">{% block topbar_actions %}{% endblock %}</div>
+    </header>
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}
+<div id="toasts" class="toasts"></div>
+<script src="/static/vendor/lucide/lucide.min.js"></script>
+<script src="/static/vendor/katex/katex.min.js"></script>
+<script src="/static/vendor/katex/contrib/auto-render.min.js"></script>
+<script src="/static/js/app.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

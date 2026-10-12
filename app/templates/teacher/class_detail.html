@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ classroom.name }}{% endblock %}
+{% block crumbs %}<a href="/classes">Класове</a><span class="sep">/</span><span class="current">{{ classroom.name }}</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1><i data-lucide="school"></i> <span id="className">{{ classroom.name }}</span></h1><p class="muted">{{ classroom.subject }}{% if classroom.curriculum %} · {{ classroom.curriculum.title }}{% endif %} · код за присъединяване: <span class="kbd">{{ classroom.join_code }}</span></p></div>
+  <div class="actions"><button class="btn" id="renameBtn"><i data-lucide="pencil"></i> Преименувай</button><button class="btn primary" id="addStudentsBtn"><i data-lucide="user-plus"></i> Добави ученици</button><button class="btn danger" id="deleteClassBtn"><i data-lucide="trash-2"></i></button></div>
+</div>
+<div class="grid cols-2">
+  <div class="card" id="studentsCard" data-class="{{ classroom.id }}"><div class="card-head"><h2><i data-lucide="users"></i> Ученици <span class="badge" id="studentCount"></span></h2></div><div id="students"></div></div>
+  <div class="card"><div class="card-head"><h2><i data-lucide="send"></i> Задания за класа</h2><a class="btn sm" href="/tests"><i data-lucide="plus"></i> Възложи тест</a></div>
+    {% if assignments %}<div class="list">{% for a in assignments %}<a class="list-item" href="/assignments/{{ a.id }}" style="color:inherit"><span class="badge {{ 'danger' if a.mode == 'exam' else 'primary' }}">{{ 'Изпит' if a.mode == 'exam' else 'Упражнение' }}</span><div class="body"><div class="title">{{ a.title }}</div><div class="meta"><span>от {{ a.start_at|dt }}</span>{% if a.end_at %}<span>до {{ a.end_at|dt }}</span>{% endif %}</div></div><i data-lucide="chevron-right"></i></a>{% endfor %}</div>{% else %}<p class="muted">Няма възложени тестове.</p>{% endif %}
+  </div>
+</div>
+<select id="curriculumOptions" class="hidden"><option value="">— без учебна програма —</option>{% for c in curricula %}<option value="{{ c.id }}" {% if classroom.curriculum_id == c.id %}selected{% endif %}>{{ c.title }}</option>{% endfor %}</select>
+{% endblock %}
+{% block scripts %}<script src="/static/js/classes.js"></script>{% endblock %}
