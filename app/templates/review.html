@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Преглед на решение{% endblock %}
+{% block head_css %}<link rel="stylesheet" href="/static/vendor/quill/quill.snow.css">{% endblock %}
+{% block crumbs %}
+  {% if user.role == 'teacher' %}<a href="/assignments">Задания</a><span class="sep">/</span><a href="/assignments/{{ attempt.assignment_id }}">{{ attempt.assignment.title }}</a><span class="sep">/</span><span class="current">{{ attempt.student.full_name }}</span>
+  {% else %}<a href="/my-results">Моите резултати</a><span class="sep">/</span><span class="current">{{ attempt.assignment.title }}</span>{% endif %}
+{% endblock %}
+{% block content %}
+<div id="review" data-attempt="{{ attempt.id }}" data-teacher="{{ 1 if user.role == 'teacher' else 0 }}"><div class="empty"><span class="spinner"></span></div></div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/questions.js"></script><script src="/static/js/review.js"></script>{% endblock %}

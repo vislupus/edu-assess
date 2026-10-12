@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block layout %}
+<div class="login-page">
+  <div class="login-hero">
+    <div class="brand big"><span class="brand-mark"><i data-lucide="graduation-cap"></i></span><span class="brand-name">{{ app_name }}</span></div>
+    <h1>Тестове, класни стаи, изпити и анализ на резултатите</h1>
+    <p class="muted">Демо вход без регистрация – изберете потребител. В реална среда входът ще се извършва през външната SSO система на училището.</p>
+    <ul class="feature-list">
+      <li><i data-lucide="sparkles"></i> Генериране на тестове с AI по учебните програми</li>
+      <li><i data-lucide="shield-check"></i> Изпитен режим със защита от преписване</li>
+      <li><i data-lucide="chart-no-axes-column"></i> Анализ по ученик, клас и въпрос</li>
+      <li><i data-lucide="sigma"></i> Формули с KaTeX, редактор Quill</li>
+    </ul>
+  </div>
+  <div class="login-panel">
+    <h2><i data-lucide="user-round-check"></i> Учители</h2>
+    <div class="user-grid">
+      {% for t in teachers %}
+      <form method="post" action="/login">
+        <input type="hidden" name="user_id" value="{{ t.id }}">
+        <button class="user-card" type="submit">
+          <span class="avatar lg" style="--c: {{ t.avatar_color }}">{{ t.initials }}</span>
+          <span class="user-card-name">{{ t.full_name }}</span>
+          <span class="user-card-sub">{{ t.subject }}</span>
+        </button>
+      </form>
+      {% endfor %}
+    </div>
+    <h2><i data-lucide="backpack"></i> Ученици</h2>
+    {% for grade, list in students.items() %}
+    <div class="grade-label"><i data-lucide="school"></i> {{ grade }} клас</div>
+    <div class="user-grid compact">
+      {% for s in list %}
+      <form method="post" action="/login">
+        <input type="hidden" name="user_id" value="{{ s.id }}">
+        <button class="user-card" type="submit">
+          <span class="avatar" style="--c: {{ s.avatar_color }}">{{ s.initials }}</span>
+          <span class="user-card-name">{{ s.full_name }}</span>
+        </button>
+      </form>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

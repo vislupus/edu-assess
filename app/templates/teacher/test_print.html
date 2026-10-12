@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ test.title }} – печат{% endblock %}
+{% block layout %}
+<div class="print-page">
+  <div class="no-print row gap mb"><button class="btn primary" onclick="window.print()"><i data-lucide="printer"></i> Отпечатай</button><a class="btn ghost" href="/tests/{{ test.id }}/edit">Назад</a>{% if answer_key %}<span class="badge danger">Ключ с отговорите</span>{% endif %}</div>
+  <h1>{{ test.title }}{% if answer_key %} – отговори{% endif %}</h1>
+  <p class="muted">{{ test.subject }}{% if test.grade_label %} · {{ test.grade_label }}{% endif %} · {{ test.questions|length }} въпроса · {{ test.questions|map(attribute='points')|sum }} т.</p>
+  {% if not answer_key %}<p>Име: ____________________________________ Клас: ________ Дата: ___________</p>{% endif %}
+  {% if test.description %}<p>{{ test.description }}</p>{% endif %}
+  <div id="printQuestions" data-key="{{ 1 if answer_key else 0 }}"></div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/questions.js"></script><script>
+(async function(){
+  const { h, icons, renderMath } = App;
+  const root = document.getElementById('printQuestions'); const key = root.dataset.key === '1';
+  const t = await App.api('GET', '/api/tests/{{ test.id }}');
+  t.questions.forEach((q, i) => {
+    const ctx = { key: q.id, n: i + 1, response: key ? answerFor(q) : null, review: key, teacherView: true, final_score: key ? q.points : 0, onChange: () => {} };
+    root.append(Questions.renderCard(q, ctx));
+  });
+  icons(root); renderMath(root);
+  function answerFor(q) {
+    const d = q.data;
+    switch (q.type) {
+      case 'single_choice': return d.correct; case 'multi_choice': return d.correct;
+      case 'true_false': return Object.fromEntries(d.statements.map(s => [s.id, s.answer]));
+      case 'dropdown_blank': return Object.fromEntries(Object.entries(d.blanks).map(([k, b]) => [k, b.correct]));
+      case 'fill_blank': return Object.fromEntries(Object.entries(d.blanks).map(([k, b]) => [k, b.answers[0]]));
+      case 'ordering': return d.correct_order; case 'matching': return d.pairs;
+      case 'grouping': return Object.fromEntries(d.items.map(i => [i.id, i.group]));
+      case 'numeric': return d.answer; case 'find_errors': return Object.fromEntries(d.errors.map(e => [String(e.index), e.correct]));
+      case 'hotspot': return Object.fromEntries(d.markers.map(m => [m.id, m.label_id]));
+      case 'open': return { text: d.model_answer };
+      case 'reading': case 'listening': return Object.fromEntries(d.sub_questions.map(sq => [sq.id, answerFor(sq)]));
+      default: return null;
+    }
+  }
+})();
+</script>{% endblock %}

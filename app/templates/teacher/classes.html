@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Класове{% endblock %}
+{% block crumbs %}<span class="current">Класове</span>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1><i data-lucide="users"></i> Класове</h1><p class="muted">Класни стаи, в които добавяте ученици и възлагате тестове.</p></div>
+  <div class="actions"><button class="btn primary" id="newClassBtn"><i data-lucide="plus"></i> Нов клас</button></div>
+</div>
+<div id="classList" class="grid cols-3" data-curricula='{{ curricula|map(attribute="id")|list|jsonattr }}'></div>
+<script id="curriculaData" type="application/json">{{ [] if not curricula else (curricula|map(attribute='title')|list)|jsonattr }}</script>
+<select id="curriculumOptions" class="hidden"><option value="">— без учебна програма —</option>{% for c in curricula %}<option value="{{ c.id }}">{{ c.title }}</option>{% endfor %}</select>
+{% endblock %}
+{% block scripts %}<script src="/static/js/classes.js"></script>{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Начало{% endblock %}
+{% block crumbs %}<span class="current">Начало</span>{% endblock %}
+{% block topbar_actions %}<a class="btn primary sm" href="/tests/new"><i data-lucide="plus"></i> Нов тест</a>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1><i data-lucide="layout-dashboard"></i> Добре дошли, {{ user.full_name.split()[0] }}!</h1><p class="muted">{{ user.subject }} · преглед на вашата дейност</p></div>
+</div>
+{% if ai_mode == 'off' %}<div class="ai-note mb"><i data-lucide="sparkles"></i><div><strong>AI генерирането не е конфигурирано.</strong> Добавете <span class="kbd">GEMINI_API_KEY</span> в <span class="kbd">.env</span> (или <span class="kbd">AI_MOCK=1</span> за демонстрация) и рестартирайте сървъра.</div></div>
+{% elif ai_mode == 'mock' %}<div class="ai-note mb"><i data-lucide="sparkles"></i><div><strong>AI работи в демо режим</strong> (без реален Gemini ключ) – генерираните въпроси са примерни. Добавете <span class="kbd">GEMINI_API_KEY</span> за реално генериране по учебните програми.</div></div>{% endif %}
+<div class="grid cols-4 mb">
+  <a class="tile" href="/classes"><div class="stat"><span class="label">Класове</span><span class="value">{{ classes|length }} <small>· {{ students_count }} ученици</small></span></div></a>
+  <a class="tile" href="/tests"><div class="stat"><span class="label">Тестове</span><span class="value">{{ tests_count }}</span></div></a>
+  <a class="tile" href="/bank"><div class="stat"><span class="label">Банка с въпроси</span><span class="value">{{ bank_count }}</span></div></a>
+  <a class="tile" href="/assignments"><div class="stat {% if needs_manual_total %}warning{% endif %}"><span class="label">За ръчна проверка</span><span class="value">{{ needs_manual_total }}</span></div></a>
+</div>
+<div class="grid cols-2">
+  <div class="card">
+    <div class="card-head"><h2><i data-lucide="send"></i> Последни задания</h2><a class="btn sm ghost" href="/assignments">Всички</a></div>
+    {% if rows %}
+    <div class="list">
+      {% for r in rows %}
+      <a class="list-item" href="/assignments/{{ r.a.id }}" style="color:inherit">
+        <span class="badge {{ 'danger' if r.a.mode == 'exam' else 'primary' }}"><i data-lucide="{{ 'shield-alert' if r.a.mode == 'exam' else 'pencil-line' }}"></i></span>
+        <div class="body"><div class="title">{{ r.a.title }}</div><div class="meta"><span>{{ r.a.classrooms|map(attribute='classroom.name')|join(', ') }}</span><span>предадени: {{ r.submitted }}</span>{% if r.in_progress %}<span>в процес: {{ r.in_progress }}</span>{% endif %}{% if r.needs_manual %}<span class="badge warning">{{ r.needs_manual }} за проверка</span>{% endif %}</div></div>
+        <span class="badge {{ 'success' if r.open else '' }}">{{ 'Активно' if r.open else 'Затворено' }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}<div class="empty"><i data-lucide="inbox"></i><h3>Още няма задания</h3><p>Създайте тест и го възложете на клас.</p></div>{% endif %}
+  </div>
+  <div class="stack">
+    <div class="card">
+      <div class="card-head"><h2><i data-lucide="zap"></i> Бързи действия</h2></div>
+      <div class="grid cols-2">
+        <a class="tile" href="/tests/new"><div class="tile-title"><i data-lucide="sparkles"></i> Тест с AI</div><div class="tile-sub">Подредете контейнери и оставете AI да ги запълни по учебната програма</div></a>
+        <a class="tile" href="/bank"><div class="tile-title"><i data-lucide="library"></i> Нов въпрос</div><div class="tile-sub">Добавете въпрос в банката – 15 типа задачи</div></a>
+        <a class="tile" href="/classes"><div class="tile-title"><i data-lucide="user-plus"></i> Ученици в клас</div><div class="tile-sub">Създайте класна стая и добавете ученици</div></a>
+        <a class="tile" href="/curricula"><div class="tile-title"><i data-lucide="book-open"></i> Учебни програми</div><div class="tile-sub">Темите и очакваните резултати по предмета</div></a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2><i data-lucide="users"></i> Моите класове</h2><a class="btn sm ghost" href="/classes">Управление</a></div>
+      {% for c in classes %}<a class="list-item" href="/classes/{{ c.id }}" style="color:inherit"><span class="avatar" style="--c: var(--primary)"><i data-lucide="school"></i></span><div class="body"><div class="title">{{ c.name }}</div><div class="meta"><span>{{ c.members|length }} ученици</span><span>{{ c.subject }}</span></div></div><i data-lucide="chevron-right"></i></a>{% else %}<p class="muted">Нямате класове.</p>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

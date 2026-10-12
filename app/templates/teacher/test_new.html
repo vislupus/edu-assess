@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Нов тест{% endblock %}
+{% block crumbs %}<a href="/tests">Тестове</a><span class="sep">/</span><span class="current">Нов тест</span>{% endblock %}
+{% block content %}
+<div id="wizard" data-ai="{{ ai_mode }}"></div>
+<select id="curriculumOptions" class="hidden"><option value="">— без учебна програма —</option>{% for c in curricula %}<option value="{{ c.id }}" data-subject="{{ c.subject }}" data-topics='{{ c.topics|map(attribute="title")|list|jsonattr }}' {% if c.subject == user.subject %}data-mine="1"{% endif %}>{{ c.title }}</option>{% endfor %}</select>
+<script id="qtypesData" type="application/json">{{ qtypes_list|jsonattr }}</script>
+{% endblock %}
+{% block scripts %}<script src="/static/js/sections.js"></script><script src="/static/js/test_new.js"></script>{% endblock %}

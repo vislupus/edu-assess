@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ test.title }}{% endblock %}
+{% block head_css %}<link rel="stylesheet" href="/static/vendor/quill/quill.snow.css">{% endblock %}
+{% block crumbs %}<a href="/tests">Тестове</a><span class="sep">/</span><span class="current" id="crumbTitle">{{ test.title }}</span>{% endblock %}
+{% block topbar_actions %}
+  <a class="btn sm" href="/tests/{{ test.id }}/print" target="_blank"><i data-lucide="printer"></i> Печат</a>
+  <a class="btn sm" href="/tests/{{ test.id }}/print?key=1" target="_blank"><i data-lucide="key-round"></i> Отговори</a>
+  <a class="btn sm primary" href="/tests/{{ test.id }}/assign"><i data-lucide="send"></i> Възложи</a>
+{% endblock %}
+{% block content %}
+<div id="builder" data-test="{{ test.id }}" data-ai="{{ ai_mode }}"></div>
+<select id="curriculumOptions" class="hidden"><option value="">— без учебна програма —</option>{% for c in curricula %}<option value="{{ c.id }}" data-topics='{{ c.topics|map(attribute="title")|list|jsonattr }}'>{{ c.title }}</option>{% endfor %}</select>
+<script id="qtypesData" type="application/json">{{ qtypes_list|jsonattr }}</script>
+{% endblock %}
+{% block scripts %}<script src="/static/vendor/quill/quill.js"></script><script src="/static/js/questions.js"></script><script src="/static/js/editor.js"></script><script src="/static/js/sections.js"></script><script src="/static/js/builder.js"></script>{% endblock %}

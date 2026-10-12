@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ attempt.assignment.title }} · {{ app_name }}</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="/static/vendor/quill/quill.snow.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="player-body" data-attempt="{{ attempt.id }}" data-exam="{{ 1 if exam else 0 }}">
+<div class="player" id="player"><div class="empty"><span class="spinner"></span></div></div>
+<div id="toasts" class="toasts"></div>
+<script src="/static/vendor/lucide/lucide.min.js"></script>
+<script src="/static/vendor/katex/katex.min.js"></script>
+<script src="/static/vendor/katex/contrib/auto-render.min.js"></script>
+<script src="/static/vendor/quill/quill.js"></script>
+<script src="/static/js/app.js"></script>
+<script src="/static/js/questions.js"></script>
+<script src="/static/js/player.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Грешка {{ status }}{% endblock %}
+{% block layout %}
+<div class="center-page">
+  <div class="card error-card">
+    <div class="error-code">{{ status }}</div>
+    <h1>{% if status == 404 %}Страницата не е намерена{% elif status == 403 %}Нямате достъп{% elif status == 401 %}Необходим е вход{% else %}Възникна проблем{% endif %}</h1>
+    <p class="muted">{{ detail }}</p>
+    <div class="row gap">
+      <a class="btn" href="/"><i data-lucide="home"></i> Начало</a>
+      <a class="btn ghost" href="/login"><i data-lucide="log-in"></i> Вход</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
